@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alter Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--black:#0a0a0a;--white:#f5f2ee;--accent:#c8f55a;--card:#141414;--muted:#6b6b6b;--border:#1e1e1e;--purple:#8b5cf6}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+
+/* HEADER */
+.header{display:flex;align-items:center;gap:.875rem;padding:1rem 1.25rem;border-bottom:1px solid var(--border);background:#0d0d0d;flex-shrink:0}
+.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--accent));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;color:var(--black);flex-shrink:0}
+.header-info{flex:1}
+.header-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem}
+.header-status{font-size:.72rem;color:var(--accent)}
+.header-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--muted)}
+.header-logo span{color:var(--accent)}
+
+/* SENDER SETUP */
+.sender-setup{padding:1rem 1.25rem;background:#111;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+.sender-setup input{background:#1a1a1a;border:1px solid var(--border);border-radius:100px;padding:.4rem .9rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:.82rem;outline:none;width:140px;transition:border-color .2s}
+.sender-setup input:focus{border-color:#333}
+.sender-setup span{color:var(--muted);font-size:.8rem}
+
+/* CHAT AREA */
+.chat-area{flex:1;overflow-y:auto;padding:1rem 1rem 0;display:flex;flex-direction:column;gap:.6rem;scroll-behavior:smooth}
+.chat-area::-webkit-scrollbar{width:4px}
+.chat-area::-webkit-scrollbar-track{background:transparent}
+.chat-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:100px}
+
+.msg-wrap{display:flex;flex-direction:column;max-width:80%}
+.msg-wrap.them{align-self:flex-start}
+.msg-wrap.alter{align-self:flex-end}
+.msg{padding:.65rem .95rem;border-radius:18px;font-size:.9rem;line-height:1.5}
+.msg.them{background:#1e1e1e;border-bottom-left-radius:4px;color:#d0d0d0}
+.msg.alter{background:var(--purple);border-bottom-right-radius:4px;color:var(--white)}
+.msg-meta{font-size:.68rem;color:var(--muted);margin-top:.3rem;padding:0 .25rem}
+.msg-wrap.alter .msg-meta{text-align:right}
+
+/* TYPING */
+.typing-wrap{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;align-self:flex-start}
+.typing-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--accent));flex-shrink:0}
+.typing-dots{display:flex;gap:3px;background:#1e1e1e;padding:.55rem .85rem;border-radius:18px;border-bottom-left-radius:4px}
+.typing-dots span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1.2s ease-in-out infinite}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+#typing{display:none}
+
+/* WELCOME */
+.welcome{text-align:center;padding:2rem 1rem;color:var(--muted);font-size:.875rem;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem}
+.welcome .big{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700;color:var(--white)}
+.welcome .sub{font-size:.82rem;color:var(--muted);line-height:1.6;max-width:280px}
+.alter-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);border-radius:100px;padding:.35rem .85rem;font-size:.75rem;color:#a78bfa;margin-bottom:.5rem}
+
+/* INPUT ZONE */
+.input-zone{padding:.875rem 1rem;border-top:1px solid var(--border);background:#0d0d0d;display:flex;align-items:flex-end;gap:.75rem;flex-shrink:0}
+.input-zone textarea{flex:1;background:#1a1a1a;border:1px solid var(--border);border-radius:18px;padding:.65rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;resize:none;max-height:120px;line-height:1.4;transition:border-color .2s}
+.input-zone textarea:focus{border-color:#333}
+.send-btn{width:38px;height:38px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s;margin-bottom:1px}
+.send-btn:hover{opacity:.85}
+.send-btn:disabled{opacity:.4;cursor:not-allowed}
+.send-btn svg{width:16px;height:16px}
+
+/* LOADING STATE */
+.loading{display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.875rem}
+.error-state{text-align:center;padding:3rem 1.5rem;color:var(--muted)}
+.error-state h2{font-family:'Syne',sans-serif;color:var(--white);margin-bottom:.5rem}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="avatar" id="header-avatar">?</div>
+  <div class="header-info">
+    <div class="header-name" id="header-name">Chargement...</div>
+    <div class="header-status" id="header-status">● Alter IA en ligne</div>
+  </div>
+  <div class="header-logo">alter<span>.</span></div>
+</div>
+
+<div class="sender-setup">
+  <span>Tu es :</span>
+  <input type="text" id="sender-name" placeholder="Ton prénom" maxlength="20" value="">
+  <span style="font-size:.75rem;color:var(--muted)">(visible dans les logs)</span>
+</div>
+
+<div class="chat-area" id="chat-area">
+  <div class="loading" id="loading">Connexion à l'Alter...</div>
+</div>
+
+<div class="input-zone">
+  <textarea id="msg-input" placeholder="Message..." rows="1" disabled></textarea>
+  <button class="send-btn" id="send-btn" onclick="sendMessage()" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12h14M12 5l7 7-7 7"/>
+    </svg>
+  </button>
+</div>
+
+<script>
+const alterId = window.location.pathname.split('/').pop();
+let alter = null;
+let history = [];
+
+async function init() {
+  try {
+    const res = await fetch('/api/alter/' + alterId);
+    if (!res.ok) throw new Error('Alter introuvable');
+    alter = await res.json();
+
+    document.getElementById('header-avatar').textContent = alter.name.slice(0,2).toUpperCase();
+    document.getElementById('header-name').textContent = alter.name + "'s Alter";
+    document.title = alter.name + "'s Alter";
+
+    const chatArea = document.getElementById('chat-area');
+    chatArea.innerHTML = `
+      <div class="welcome" id="welcome">
+        <div class="alter-badge">🤖 Alter IA · Clone de ${alter.name}</div>
+        <div class="big">Parle à ${alter.name}</div>
+        <p class="sub">${alter.name} est peut-être occupé(e), mais son Alter est toujours là. Il/elle verra cette conversation dans ses logs.</p>
+      </div>
+      <div id="typing" class="typing-wrap">
+        <div class="typing-avatar"></div>
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+    `;
+
+    document.getElementById('msg-input').disabled = false;
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('msg-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+    document.getElementById('msg-input').addEventListener('input', autoResize);
+
+  } catch(e) {
+    document.getElementById('chat-area').innerHTML = `
+      <div class="error-state">
+        <h2>Alter introuvable 💀</h2>
+        <p>Ce lien n'existe pas ou a été supprimé.</p>
+      </div>
+    `;
+  }
+}
+
+function autoResize() {
+  const ta = document.getElementById('msg-input');
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+}
+
+function getSenderName() {
+  const input = document.getElementById('sender-name');
+  return input.value.trim() || 'Anonyme';
+}
+
+function addMessage(text, isAlter, sender) {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const typing = document.getElementById('typing');
+  const chatArea = document.getElementById('chat-area');
+
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap ' + (isAlter ? 'alter' : 'them');
+
+  const now = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+  wrap.innerHTML = `
+    <div class="msg ${isAlter ? 'alter' : 'them'}">${text.replace(/\n/g,'<br>')}</div>
+    <div class="msg-meta">${isAlter ? 'Alter · ' + now : (sender || 'Toi') + ' · ' + now}</div>
+  `;
+
+  chatArea.insertBefore(wrap, typing);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function showTyping(show) {
+  document.getElementById('typing').style.display = show ? 'flex' : 'none';
+  const chatArea = document.getElementById('chat-area');
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('msg-input');
+  const text = input.value.trim();
+  if (!text || !alter) return;
+
+  const sender = getSenderName();
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+
+  addMessage(text, false, sender);
+  history.push({ text, isAlter: false, sender });
+
+  showTyping(true);
+
+  try {
+    const res = await fetch('/api/chat/' + alterId, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ message: text, senderName: sender, history: history.slice(-10) })
+    });
+    const data = await res.json();
+    showTyping(false);
+
+    if (data.reply) {
+      addMessage(data.reply, true);
+      history.push({ text: data.reply, isAlter: true });
+    } else {
+      addMessage('Erreur: ' + (data.error || 'Réessaie'), true);
+    }
+  } catch(e) {
+    showTyping(false);
+    addMessage('Problème de connexion, réessaie 😬', true);
+  }
+
+  document.getElementById('send-btn').disabled = false;
+  input.focus();
+}
+
+init();
+</script>
+</body>
+</html>

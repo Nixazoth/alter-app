@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Alter</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--black:#0a0a0a;--white:#f5f2ee;--accent:#c8f55a;--card:#141414;--muted:#6b6b6b;--border:#1e1e1e;--purple:#8b5cf6}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:4rem}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2rem;border-bottom:1px solid var(--border)}
+.logo{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800}
+.logo span{color:var(--accent)}
+.logo a{text-decoration:none;color:inherit}
+.back{color:var(--muted);text-decoration:none;font-size:.875rem}
+.back:hover{color:var(--white)}
+
+/* LOGIN */
+.login-wrap{max-width:400px;margin:4rem auto;padding:0 1.5rem;text-align:center}
+.login-wrap h1{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;margin-bottom:.5rem}
+.login-wrap h1 span{color:var(--accent)}
+.login-wrap p{color:var(--muted);font-size:.875rem;margin-bottom:2rem}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem}
+input{width:100%;background:#111;border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;margin-bottom:1rem}
+input:focus{border-color:#333}
+.btn{width:100%;background:var(--accent);color:var(--black);border:none;padding:.8rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:500;cursor:pointer;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.err{color:#ef4444;font-size:.82rem;margin-top:.5rem}
+
+/* DASHBOARD */
+#dashboard{display:none}
+.container{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem}
+.dash-header{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;flex-wrap:wrap}
+.dash-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--accent));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:var(--black)}
+.dash-name{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800}
+.dash-name small{font-size:.875rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;display:block}
+.share-btn{margin-left:auto;background:var(--accent);color:var(--black);border:none;padding:.6rem 1.25rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:500;cursor:pointer;transition:opacity .15s}
+.share-btn:hover{opacity:.85}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;margin-bottom:2.5rem}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem}
+.stat-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;line-height:1}
+.stat-label{color:var(--muted);font-size:.78rem;margin-top:.25rem}
+
+/* LOGS */
+.logs-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.logs-title .badge{background:var(--border);border-radius:100px;padding:.2rem .75rem;font-size:.75rem;font-weight:400;color:var(--muted);font-family:'DM Sans',sans-serif}
+.log-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.25rem;margin-bottom:.75rem}
+.log-meta{display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem;flex-wrap:wrap}
+.log-sender{background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.2);color:#a78bfa;border-radius:100px;padding:.25rem .75rem;font-size:.75rem;font-weight:500}
+.log-time{color:var(--muted);font-size:.75rem}
+.log-exchange{display:flex;flex-direction:column;gap:.5rem}
+.log-msg{display:flex;gap:.6rem;align-items:flex-start}
+.log-msg .who{font-size:.72rem;color:var(--muted);white-space:nowrap;padding-top:.25rem;min-width:60px}
+.log-msg .text{background:#111;border-radius:10px;padding:.5rem .75rem;font-size:.85rem;line-height:1.5;flex:1}
+.log-msg.is-alter .text{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2)}
+.empty-logs{text-align:center;padding:3rem;color:var(--muted);border:1px dashed var(--border);border-radius:16px}
+.empty-logs .emoji{font-size:2rem;margin-bottom:.5rem}
+.copy-link{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.3rem .85rem;border-radius:100px;font-size:.78rem;cursor:pointer;transition:all .2s}
+.copy-link:hover{border-color:#444;color:var(--white)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo"><a href="/">alter<span>.</span></a></div>
+  <a href="/" class="back">← Accueil</a>
+</nav>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-section">
+  <h1>Ton <span>Dashboard</span></h1>
+  <p>Lis ce que ton Alter a dit à tes potes. Entre ton mot de passe pour accéder.</p>
+  <div class="login-box">
+    <input type="password" id="pw-input" placeholder="Ton mot de passe..." onkeydown="if(event.key==='Enter')login()">
+    <button class="btn" onclick="login()">Accéder aux logs →</button>
+    <div class="err" id="login-err" style="display:none">Mauvais mot de passe 💀</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="container">
+    <div class="dash-header">
+      <div class="dash-avatar" id="d-avatar">?</div>
+      <div>
+        <div class="dash-name" id="d-name">—<small>Dashboard de ton Alter</small></div>
+      </div>
+      <button class="share-btn" onclick="copyAlterLink()">Copier mon lien</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="stat-convos">0</div><div class="stat-label">Conversations</div></div>
+      <div class="stat"><div class="stat-num" id="stat-msgs">0</div><div class="stat-label">Messages reçus</div></div>
+      <div class="stat"><div class="stat-num" id="stat-people">0</div><div class="stat-label">Personnes uniques</div></div>
+      <div class="stat"><div class="stat-num" id="stat-today">0</div><div class="stat-label">Aujourd'hui</div></div>
+    </div>
+
+    <div class="logs-title">
+      Conversations <span class="badge" id="logs-count">0 échanges</span>
+      <button class="copy-link" onclick="copyAlterLink()">Partager mon lien →</button>
+    </div>
+    <div id="logs-container">
+      <div class="empty-logs"><div class="emoji">👀</div><p>Aucune conversation pour l'instant.<br>Partage ton lien à tes potes !</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const alterId = window.location.pathname.split('/').pop();
+let alterData = null;
+
+async function login() {
+  const pw = document.getElementById('pw-input').value.trim();
+  if (!pw) return;
+
+  try {
+    const res = await fetch('/api/logs/' + alterId, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ password: pw })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      document.getElementById('login-err').style.display = 'block';
+      return;
+    }
+
+    alterData = data.alter;
+    renderDashboard(data.alter, data.logs);
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+
+  } catch(e) {
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+
+function renderDashboard(alter, logs) {
+  document.getElementById('d-avatar').textContent = alter.name.slice(0,2).toUpperCase();
+  document.getElementById('d-name').innerHTML = alter.name + `'s Alter<small>Dashboard · alter.app/chat/${alter.id}</small>`;
+
+  // Stats
+  const today = new Date().toDateString();
+  const todayLogs = logs.filter(l => new Date(l.timestamp).toDateString() === today);
+  const uniquePeople = new Set(logs.map(l => l.sender)).size;
+
+  document.getElementById('stat-convos').textContent = logs.length;
+  document.getElementById('stat-msgs').textContent = logs.length;
+  document.getElementById('stat-people').textContent = uniquePeople;
+  document.getElementById('stat-today').textContent = todayLogs.length;
+  document.getElementById('logs-count').textContent = logs.length + ' échange' + (logs.length > 1 ? 's' : '');
+
+  // Logs
+  const container = document.getElementById('logs-container');
+  if (!logs.length) return;
+
+  // Sort newest first
+  const sorted = [...logs].reverse();
+
+  container.innerHTML = sorted.map(log => {
+    const d = new Date(log.timestamp);
+    const time = d.toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit'}) + ' à ' + d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+    return `
+      <div class="log-card">
+        <div class="log-meta">
+          <span class="log-sender">${log.sender}</span>
+          <span class="log-time">${time}</span>
+        </div>
+        <div class="log-exchange">
+          <div class="log-msg">
+            <span class="who">${log.sender}</span>
+            <div class="text">${log.message}</div>
+          </div>
+          <div class="log-msg is-alter">
+            <span class="who">Alter</span>
+            <div class="text">${log.reply}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function copyAlterLink() {
+  const link = window.location.origin + '/chat/' + alterId;
+  navigator.clipboard.writeText(link).then(() => {
+    const btn = document.querySelector('.share-btn') || document.querySelector('.copy-link');
+    const orig = btn.textContent;
+    btn.textContent = 'Copié ✓';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+// Auto-focus password
+document.getElementById('pw-input').focus();
+document.getElementById('pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') login();
+});
+</script>
+</body>
+</html>

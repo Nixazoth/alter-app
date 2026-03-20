@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alter — Ton clone IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--black:#0a0a0a;--white:#f5f2ee;--accent:#c8f55a;--card:#141414;--muted:#6b6b6b;--border:#1e1e1e;--purple:#8b5cf6}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;border-bottom:1px solid var(--border)}
+.logo{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.02em}
+.logo span{color:var(--accent)}
+.btn{background:var(--accent);color:var(--black);border:none;padding:.6rem 1.4rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;text-decoration:none;display:inline-block;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn-outline{background:transparent;color:var(--white);border:1px solid var(--border);padding:.6rem 1.4rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:.9rem;cursor:pointer;text-decoration:none;display:inline-block;transition:border-color .2s}
+.btn-outline:hover{border-color:#444}
+
+.hero{text-align:center;padding:5rem 2rem 3rem;max-width:800px;margin:0 auto}
+.badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--border);border:1px solid #2a2a2a;border-radius:100px;padding:.3rem .9rem;font-size:.75rem;color:var(--muted);margin-bottom:2rem}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(2.5rem,7vw,5.5rem);font-weight:800;line-height:1;letter-spacing:-.04em;margin-bottom:1.25rem}
+h1 .green{color:var(--accent)}
+.sub{color:var(--muted);font-size:1.05rem;max-width:440px;margin:0 auto 2.5rem;line-height:1.6}
+.actions{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap}
+
+/* ALTERS GRID */
+.section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+.section-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:1.5rem;letter-spacing:-.02em}
+.alters-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.alter-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.25rem;text-decoration:none;color:var(--white);transition:border-color .2s,transform .15s;display:block}
+.alter-card:hover{border-color:#333;transform:translateY(-2px)}
+.alter-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--accent));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:var(--black);margin-bottom:.75rem}
+.alter-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:.25rem}
+.alter-style{font-size:.8rem;color:var(--muted);margin-bottom:.75rem;line-height:1.4}
+.alter-chat-btn{font-size:.8rem;color:var(--accent);font-weight:500}
+.empty{color:var(--muted);font-size:.9rem;padding:2rem;text-align:center;border:1px dashed var(--border);border-radius:16px}
+
+/* HOW IT WORKS */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2rem}
+.step{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem}
+.step-n{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:var(--border);margin-bottom:.75rem}
+.step h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.4rem}
+.step p{color:var(--muted);font-size:.82rem;line-height:1.6}
+
+footer{text-align:center;padding:2rem;border-top:1px solid var(--border);font-size:.8rem;color:var(--muted)}
+footer span{color:var(--accent)}
+/* ANIMATED BACKGROUND */
+.bg-canvas{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.bubble{position:absolute;bottom:-100px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:18px;padding:.6rem 1rem;font-size:.8rem;color:#444;white-space:nowrap;animation:floatup linear infinite;opacity:0}
+.bubble.green{border-color:#1a2e00;color:#3a5a00;background:#0d1800}
+@keyframes floatup{0%{opacity:0;transform:translateY(0) translateX(0)}10%{opacity:1}80%{opacity:.6}100%{opacity:0;transform:translateY(-110vh) translateX(30px)}}
+.particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--accent);opacity:0;animation:particle linear infinite}
+@keyframes particle{0%{opacity:0;transform:translateY(0)}20%{opacity:.4}100%{opacity:0;transform:translateY(-100vh)}}
+</style>
+</head>
+<body>
+  <div class="bg-canvas" id="bg-canvas"></div>
+<nav>
+  <div class="logo">alter<span>.</span></div>
+  <div style="display:flex;gap:.75rem;align-items:center">
+    <a href="/create" class="btn-outline">Créer mon Alter</a>
+    <a href="/create" class="btn">Commencer →</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="badge"><span class="badge-dot"></span> Beta — gratuit pour toujours en solo</div>
+  <h1>Ton double IA.<br><span class="green">Always online.</span></h1>
+  <p class="sub">Crée ton clone IA, partage le lien à tes amis, regarde-le répondre à ta place 24/7.</p>
+  <div class="actions">
+    <a href="/create" class="btn" style="font-size:1rem;padding:.8rem 2rem">Créer mon Alter →</a>
+    <a href="#alters" class="btn-outline" style="font-size:1rem;padding:.8rem 2rem">Voir les Alters</a>
+  </div>
+</div>
+
+<div class="section">
+  <div class="step-n" style="font-size:1rem;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:1rem">Comment ça marche</div>
+  <div class="steps">
+    <div class="step"><div class="step-n">01</div><h3>Tu te formes</h3><p>Réponds à quelques questions sur ta personnalité, ton humour, ta façon de parler.</p></div>
+    <div class="step" style="border-color:#2a3d00;background:#0f1a00"><div class="step-n">02</div><h3>Tu partages</h3><p>Tu reçois un lien <strong style="color:var(--accent)">alter.app/tonnom</strong> à balancer à tes potes direct.</p></div>
+    <div class="step"><div class="step-n">03</div><h3>Tu regardes</h3><p>Tes amis causent à ton Alter. Toi tu lis les logs le lendemain matin.</p></div>
+  </div>
+</div>
+
+<div class="section" id="alters">
+  <div class="section-title">Les Alters disponibles</div>
+  <div class="alters-grid" id="alters-grid">
+    <div class="empty">Aucun Alter créé pour l'instant.<br>Sois le premier 👀</div>
+  </div>
+</div>
+
+<footer><p>made with 0 budget · <span>alter.</span> beta 2025</p></footer>
+
+<script>
+async function loadAlters() {
+  try {
+    const res = await fetch('/api/alters');
+    const alters = await res.json();
+    const grid = document.getElementById('alters-grid');
+    if (!alters.length) return;
+    grid.innerHTML = alters.map(a => `
+      <div class="alter-card">
+        <div class="alter-avatar">${a.name.slice(0,2).toUpperCase()}</div>
+        <div class="alter-name">${a.name}</div>
+        <div class="alter-style">${a.style.slice(0,80)}${a.style.length > 80 ? '...' : ''}</div>
+        <div style="display:flex;gap:.5rem;margin-top:.5rem">
+          <a href="/chat/${a.id}" class="alter-chat-btn" style="flex:1;text-align:center;background:#1e1e1e;padding:.5rem;border-radius:8px;text-decoration:none;color:#c8f55a;font-size:.8rem">Parler →</a>
+          <a href="/dashboard/${a.id}" class="alter-chat-btn" style="flex:1;text-align:center;background:#1e1e1e;padding:.5rem;border-radius:8px;text-decoration:none;color:#6b6b6b;font-size:.8rem">Dashboard 🔒</a>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) { console.error(e) }
+}
+loadAlters();
+</script>
+</body>
+<script>
+const messages = [
+  "yo t'es dispo ce soir?", "c'est quoi ton Alter lol", "frr réponds 😭",
+  "ton clone est meilleur que toi", "c'est clair c'est clair",
+  "j'ai causé à ton Alter 2h 💀", "on s'appelle?", "t'es où là",
+  "ton Alter m'a dit un truc choquant", "il t'imite trop bien 😭",
+  "pose ton Alter sur mon tel stp", "c'est flippant comme c'est toi",
+  "Alter · il y a 2s", "🤖 en ligne", "répond à ma place frr"
+];
+
+const canvas = document.getElementById('bg-canvas');
+
+function createBubble() {
+  const el = document.createElement('div');
+  el.className = 'bubble' + (Math.random() > 0.6 ? ' green' : '');
+  el.textContent = messages[Math.floor(Math.random() * messages.length)];
+  el.style.left = Math.random() * 90 + '%';
+  el.style.animationDuration = (12 + Math.random() * 20) + 's';
+  el.style.animationDelay = (Math.random() * 5) + 's';
+  el.style.fontSize = (.7 + Math.random() * .25) + 'rem';
+  canvas.appendChild(el);
+  setTimeout(() => el.remove(), 35000);
+}
+
+function createParticle() {
+  const el = document.createElement('div');
+  el.className = 'particle';
+  el.style.left = Math.random() * 100 + '%';
+  el.style.bottom = Math.random() * 20 + '%';
+  el.style.animationDuration = (8 + Math.random() * 15) + 's';
+  el.style.animationDelay = (Math.random() * 3) + 's';
+  el.style.opacity = Math.random() * .4;
+  canvas.appendChild(el);
+  setTimeout(() => el.remove(), 25000);
+}
+
+// Lance les bulles en continu
+setInterval(createBubble, 1800);
+setInterval(createParticle, 600);
+
+// Quelques bulles au démarrage
+for(let i = 0; i < 6; i++) setTimeout(createBubble, i * 400);
+</script>
+</html>

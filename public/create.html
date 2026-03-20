@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Créer mon Alter</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--black:#0a0a0a;--white:#f5f2ee;--accent:#c8f55a;--card:#141414;--muted:#6b6b6b;--border:#1e1e1e;--purple:#8b5cf6}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:4rem}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2rem;border-bottom:1px solid var(--border)}
+.logo{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800}
+.logo span{color:var(--accent)}
+.logo a{text-decoration:none;color:inherit}
+.back{color:var(--muted);text-decoration:none;font-size:.875rem;transition:color .2s}
+.back:hover{color:var(--white)}
+
+.container{max-width:600px;margin:0 auto;padding:3rem 1.5rem}
+h1{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-.04em;margin-bottom:.5rem}
+h1 span{color:var(--accent)}
+.intro{color:var(--muted);font-size:.9rem;margin-bottom:2.5rem;line-height:1.6}
+
+/* PROGRESS */
+.progress-bar{height:3px;background:var(--border);border-radius:100px;margin-bottom:2.5rem;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:100px;transition:width .4s ease}
+.step-indicator{font-size:.8rem;color:var(--muted);margin-bottom:2rem}
+.step-indicator span{color:var(--accent);font-weight:500}
+
+/* FORM */
+.question-block{display:none;animation:fadeIn .3s ease}
+.question-block.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+label{display:block;font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;margin-bottom:.35rem}
+.label-hint{font-family:'DM Sans',sans-serif;font-size:.78rem;color:var(--muted);font-weight:400;display:block;margin-bottom:.6rem}
+input[type=text],input[type=password],textarea{width:100%;background:#111;border:1px solid var(--border);border-radius:12px;padding:.875rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;resize:vertical}
+input:focus,textarea:focus{border-color:#333}
+textarea{min-height:100px}
+
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.5rem}
+.opt{background:#111;border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;cursor:pointer;font-size:.875rem;color:var(--muted);transition:all .2s;text-align:center}
+.opt:hover{border-color:#333;color:var(--white)}
+.opt.selected{border-color:var(--accent);color:var(--accent);background:#0f1a00}
+
+.nav-btns{display:flex;gap:.75rem;margin-top:1.5rem}
+.btn{background:var(--accent);color:var(--black);border:none;padding:.8rem 1.8rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:500;cursor:pointer;transition:opacity .15s;flex:1}
+.btn:hover{opacity:.85}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-prev{background:transparent;color:var(--muted);border:1px solid var(--border);padding:.8rem 1.5rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:.95rem;cursor:pointer;transition:all .2s}
+.btn-prev:hover{color:var(--white);border-color:#333}
+
+/* SUCCESS */
+.success{display:none;text-align:center;padding:2rem 0}
+.success h2{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;margin-bottom:.75rem}
+.success h2 span{color:var(--accent)}
+.link-box{background:#111;border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;margin:1.5rem 0;gap:.75rem}
+.link-box span{font-size:.9rem;color:var(--accent);word-break:break-all;text-align:left}
+.copy-btn{background:var(--accent);color:var(--black);border:none;padding:.5rem 1rem;border-radius:100px;font-size:.8rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:opacity .15s}
+.copy-btn:hover{opacity:.85}
+.dash-link{display:block;color:var(--muted);font-size:.85rem;margin-top:1rem;text-decoration:none}
+.dash-link:hover{color:var(--white)}
+.emoji-big{font-size:3rem;margin-bottom:1rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo"><a href="/">alter<span>.</span></a></div>
+  <a href="/" class="back">← Retour</a>
+</nav>
+
+<div class="container">
+  <h1>Crée ton <span>Alter</span></h1>
+  <p class="intro">Réponds honnêtement — plus t'es précis, plus ton clone sera toi. Ça prend 2 minutes.</p>
+
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:14%"></div></div>
+  <div class="step-indicator">Question <span id="step-num">1</span> sur 7</div>
+
+  <form id="alter-form">
+
+    <!-- Q1 -->
+    <div class="question-block active" data-step="1">
+      <label>Ton prénom ou pseudo <span class="label-hint">Ce sera l'URL de ton Alter : alter.app/tonpseudo</span></label>
+      <input type="text" id="name" placeholder="Ex: Jordan, karim.irl, Léa..." maxlength="30">
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-block" data-step="2">
+      <label>Comment tu parles en vrai ? <span class="label-hint">Décris ton style de communication — sois précis, c'est le cœur de ton Alter.</span></label>
+      <textarea id="style" placeholder="Ex: Je parle en verlan souvent, beaucoup d'humour, je fais des références à des mèmes, j'abrège tout, je dis 'frr' et 'on s'appelle' tout le temps..."></textarea>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-block" data-step="3">
+      <label>Ton type d'humour <span class="label-hint">Clique sur ce qui te correspond</span></label>
+      <div class="options-grid">
+        <div class="opt" onclick="selectOpt(this,'humor')">Humour noir / sarcastique</div>
+        <div class="opt" onclick="selectOpt(this,'humor')">Humour absurde / random</div>
+        <div class="opt" onclick="selectOpt(this,'humor')">Taquineries entre potes</div>
+        <div class="opt" onclick="selectOpt(this,'humor')">Références (films, mèmes)</div>
+        <div class="opt" onclick="selectOpt(this,'humor')">Autodérision</div>
+        <div class="opt" onclick="selectOpt(this,'humor')">Je suis pas vraiment drôle lol</div>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-block" data-step="4">
+      <label>Tes centres d'intérêt <span class="label-hint">Ce dont tu parles le plus avec tes potes</span></label>
+      <textarea id="interests" placeholder="Ex: Gaming (surtout FPS), musique trap fr, foot, fashion streetwear, séries Netflix, technologie..."></textarea>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-block" data-step="5">
+      <label>Ton énergie / tes vibes <span class="label-hint">Comment tu te décrirais en une phrase ?</span></label>
+      <div class="options-grid">
+        <div class="opt" onclick="selectOpt(this,'vibes')">Chill et décontracté</div>
+        <div class="opt" onclick="selectOpt(this,'vibes')">Hype et énergique</div>
+        <div class="opt" onclick="selectOpt(this,'vibes')">Sarcastique et distant</div>
+        <div class="opt" onclick="selectOpt(this,'vibes')">Empathique et à l'écoute</div>
+        <div class="opt" onclick="selectOpt(this,'vibes')">Chaotique et imprévisible</div>
+        <div class="opt" onclick="selectOpt(this,'vibes')">Mystérieux et laconique</div>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-block" data-step="6">
+      <label>Tes expressions favorites <span class="label-hint">Des mots, phrases, emojis que tu utilises tout le temps</span></label>
+      <textarea id="expressions" placeholder="Ex: 'on s'appelle', 'c'est clair', 'frr', 'jsp', beaucoup de 💀 et 😭, je dis jamais 'bonjour' juste 'yo'..."></textarea>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-block" data-step="7">
+      <label>Mot de passe pour ton dashboard <span class="label-hint">Pour lire les logs de ce que ton Alter a dit — garde-le précieusement</span></label>
+      <input type="password" id="password" placeholder="Crée un mot de passe...">
+    </div>
+
+  </form>
+
+  <div class="nav-btns">
+    <button class="btn-prev" id="prev-btn" onclick="prevStep()" style="display:none">← Retour</button>
+    <button class="btn" id="next-btn" onclick="nextStep()">Continuer →</button>
+  </div>
+
+  <!-- SUCCESS STATE -->
+  <div class="success" id="success">
+    <div class="emoji-big">🔥</div>
+    <h2>Ton Alter est <span>vivant.</span></h2>
+    <p style="color:var(--muted);margin-bottom:.5rem">Balance ce lien à tes potes :</p>
+    <div class="link-box">
+      <span id="alter-link">—</span>
+      <button class="copy-btn" onclick="copyLink()">Copier</button>
+    </div>
+    <a href="#" id="chat-link" class="btn" style="display:block;text-align:center;text-decoration:none;margin-top:1rem">Voir mon Alter →</a>
+    <a href="#" id="dash-link" class="dash-link">Accéder à mon dashboard (logs) →</a>
+    <p style="color:var(--muted);font-size:.78rem;margin-top:1.5rem">💡 Garde ton mot de passe — tu en as besoin pour lire les conversations.</p>
+  </div>
+
+</div>
+
+<script>
+let currentStep = 1;
+const totalSteps = 7;
+let selectedHumor = '';
+let selectedVibes = '';
+let alterId = '';
+
+function selectOpt(el, type) {
+  const parent = el.closest('.options-grid');
+  parent.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  if (type === 'humor') selectedHumor = el.textContent;
+  if (type === 'vibes') selectedVibes = el.textContent;
+}
+
+function updateUI() {
+  document.getElementById('step-num').textContent = currentStep;
+  document.getElementById('progress').style.width = (currentStep / totalSteps * 100) + '%';
+  document.querySelectorAll('.question-block').forEach(b => b.classList.remove('active'));
+  const block = document.querySelector(`[data-step="${currentStep}"]`);
+  if (block) block.classList.add('active');
+  document.getElementById('prev-btn').style.display = currentStep > 1 ? 'block' : 'none';
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.textContent = currentStep === totalSteps ? 'Activer mon Alter 🔥' : 'Continuer →';
+}
+
+function prevStep() {
+  if (currentStep > 1) { currentStep--; updateUI(); }
+}
+
+async function nextStep() {
+  if (!validate()) return;
+  if (currentStep < totalSteps) {
+    currentStep++;
+    updateUI();
+  } else {
+    await submitForm();
+  }
+}
+
+function validate() {
+  if (currentStep === 1 && !document.getElementById('name').value.trim()) {
+    alert('Entre ton prénom ou pseudo !'); return false;
+  }
+  if (currentStep === 2 && !document.getElementById('style').value.trim()) {
+    alert('Décris comment tu parles !'); return false;
+  }
+  if (currentStep === 3 && !selectedHumor) {
+    alert('Choisis ton type d\'humour !'); return false;
+  }
+  if (currentStep === 5 && !selectedVibes) {
+    alert('Choisis tes vibes !'); return false;
+  }
+  if (currentStep === 7 && !document.getElementById('password').value.trim()) {
+    alert('Crée un mot de passe pour ton dashboard !'); return false;
+  }
+  return true;
+}
+
+async function submitForm() {
+  const btn = document.getElementById('next-btn');
+  btn.textContent = 'Création en cours...';
+  btn.disabled = true;
+
+  const payload = {
+    name: document.getElementById('name').value.trim(),
+    style: document.getElementById('style').value.trim(),
+    humor: selectedHumor,
+    interests: document.getElementById('interests').value.trim() || 'Divers',
+    vibes: selectedVibes,
+    expressions: document.getElementById('expressions').value.trim() || 'Naturel',
+    password: document.getElementById('password').value.trim()
+  };
+
+  try {
+    const res = await fetch('/api/create-alter', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      alterId = data.alterId;
+      const fullLink = window.location.origin + '/chat/' + alterId;
+      document.getElementById('alter-link').textContent = fullLink;
+      document.getElementById('chat-link').href = '/chat/' + alterId;
+      document.getElementById('dash-link').href = '/dashboard/' + alterId;
+      document.getElementById('alter-form').style.display = 'none';
+      document.querySelector('.nav-btns').style.display = 'none';
+      document.querySelector('.progress-bar').style.display = 'none';
+      document.querySelector('.step-indicator').style.display = 'none';
+      document.querySelector('h1').style.display = 'none';
+      document.querySelector('.intro').style.display = 'none';
+      document.getElementById('success').style.display = 'block';
+    } else {
+      alert('Erreur: ' + (data.error || 'Réessaie'));
+      btn.disabled = false;
+      btn.textContent = 'Activer mon Alter 🔥';
+    }
+  } catch(e) {
+    alert('Erreur réseau: ' + e.message);
+    btn.disabled = false;
+    btn.textContent = 'Activer mon Alter 🔥';
+  }
+}
+
+function copyLink() {
+  const link = document.getElementById('alter-link').textContent;
+  navigator.clipboard.writeText(link).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copié ✓';
+    setTimeout(() => btn.textContent = 'Copier', 2000);
+  });
+}
+</script>
+</body>
+</html>

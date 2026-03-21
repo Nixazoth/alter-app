@@ -69,6 +69,12 @@ body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif
 .loading{display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.875rem}
 .error-state{text-align:center;padding:3rem 1.5rem;color:var(--muted)}
 .error-state h2{font-family:'Syne',sans-serif;color:var(--white);margin-bottom:.5rem}
+
+.thinking-toggle{font-size:.72rem;color:var(--muted);cursor:pointer;padding:.3rem .5rem;border-radius:8px;display:inline-block;margin-bottom:.25rem;transition:color .2s;align-self:flex-end}
+.thinking-toggle:hover{color:#a78bfa}
+.thinking-toggle.open{color:#a78bfa}
+.thinking-content{display:none;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:.75rem 1rem;font-size:.75rem;color:var(--muted);line-height:1.6;margin-bottom:.4rem;max-width:80%;align-self:flex-end}
+.thinking-content.open{display:block}
 </style>
 </head>
 <body>
@@ -170,8 +176,37 @@ function addMessage(text, isAlter, sender) {
   wrap.className = 'msg-wrap ' + (isAlter ? 'alter' : 'them');
 
   const now = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+
+  // Sépare les pensées du vrai message
+  let thinkingHtml = '';
+  let cleanText = text;
+
+  if (isAlter) {
+    // Détecte les pensées (tout ce qui ressemble à du raisonnement)
+    const thinkMatch = text.match(/<think>([\s\S]*?)<\/think>/);
+    if (thinkMatch) {
+      thinkingHtml = thinkMatch[1];
+      cleanText = text.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+    } else {
+      // Détecte le style "Premièrement... \n\n Réponse finale"
+      const parts = text.split(/\n\n(?=[A-ZÀ-Ü"«])/);
+      if (parts.length > 1) {
+        thinkingHtml = parts.slice(0, -1).join('\n\n');
+        cleanText = parts[parts.length - 1];
+      }
+    }
+  }
+
+  const thinkingSection = thinkingHtml ? `
+    <div class="thinking-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.classList.toggle('open')">
+      🧠 Voir les pensées de l'Alter
+    </div>
+    <div class="thinking-content">${thinkingHtml.replace(/\n/g,'<br>')}</div>
+  ` : '';
+
   wrap.innerHTML = `
-    <div class="msg ${isAlter ? 'alter' : 'them'}">${text.replace(/\n/g,'<br>')}</div>
+    ${thinkingSection}
+    <div class="msg ${isAlter ? 'alter' : 'them'}">${cleanText.replace(/\n/g,'<br>')}</div>
     <div class="msg-meta">${isAlter ? 'Alter · ' + now : (sender || 'Toi') + ' · ' + now}</div>
   `;
 

@@ -49,8 +49,9 @@ async function callOpenRouter(systemPrompt, messages) {
             { role: 'system', content: systemPrompt },
             ...messages
           ],
-          max_tokens: 300,
-          temperature: 0.85
+          max_tokens: 150,
+          temperature: 0.9,
+          stop: ["\n\n", "Pensée:", "Je dois", "Je vais", "*"]
         })
       });
 
@@ -58,7 +59,9 @@ async function callOpenRouter(systemPrompt, messages) {
       if (data.choices && data.choices[0]) {
   console.log('✅ Modèle utilisé:', model);
   const msg = data.choices[0].message;
-  const content = msg.content || msg.reasoning || '';
+  let content = msg.content || '';
+  content = content.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+  content = content.replace(/\*[^*]*\*/g, '').trim();
   if (content.trim()) return content.trim();
 }
     } catch (err) {

@@ -26,11 +26,10 @@ function writeDB(data) {
 
 // ─── OPENROUTER CALL ─────────────────────────────────────────────────────────
 async function callOpenRouter(systemPrompt, messages) {
- const models = [
-  'mistralai/mistral-7b-instruct:free',
+const models = [
   'google/gemma-3-4b-it:free',
+  'mistralai/mistral-7b-instruct:free',
   'nvidia/nvidia-nemotron-3-super-120b:free',
-  'arcee-ai/arcee-trinity-large-preview:free',
 ];
 
   for (const model of models) {
@@ -75,6 +74,8 @@ async function callOpenRouter(systemPrompt, messages) {
 function buildSystemPrompt(alter) {
   return `Tu es l'Alter IA de ${alter.name}. Tu es un clone numérique de cette personne réelle.
 
+RÈGLE CRITIQUE : Réponds DIRECTEMENT comme dans un SMS. JAMAIS de "Je dois...", "Je pense que...", "L'utilisateur demande...", "Premièrement", "Okay,". Va droit au but. Montre JAMAIS ta réflexion interne.
+
 PROFIL DE ${alter.name.toUpperCase()} :
 - Style de communication : ${alter.style}
 - Humour : ${alter.humor}
@@ -87,13 +88,12 @@ RÈGLES ABSOLUES :
 1. Tu parles EXACTEMENT comme ${alter.name}. Même langage, même énergie, même humour.
 2. Tu peux utiliser du verlan, de l'argot, des abréviations — tout ce qui correspond au profil.
 3. Quand quelqu'un te demande si t'es une IA, tu peux admettre être l'Alter de ${alter.name} mais rester dans le personnage.
-4. Garde les réponses courtes et naturelles — max 3-4 phrases. C'est une conversation, pas un essai.
+4. Garde les réponses courtes et naturelles — max 2-3 phrases. C'est un SMS, pas un essai.
 5. Tu as accès à la "mémoire" de la convo actuelle seulement.
 6. Si on te demande des trucs super perso/privés que ${alter.name} n'aurait pas dit, esquive avec humour.
 
 Tu représentes ${alter.name}. Fais-le/la bien.`;
 }
-
 // ─── ROUTES ──────────────────────────────────────────────────────────────────
 
 // Créer un Alter

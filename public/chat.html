@@ -105,6 +105,8 @@ body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif
 const alterId = window.location.pathname.split('/').pop();
 let alter = null;
 let history = [];
+let messageCount = 0;
+const MAX_MESSAGES = 20;
 
 async function init() {
   try {
@@ -186,6 +188,13 @@ function showTyping(show) {
 async function sendMessage() {
   const input = document.getElementById('msg-input');
   const text = input.value.trim();
+  if (messageCount >= MAX_MESSAGES) {
+  addMessage("T'as atteint la limite de 20 messages avec cet Alter 👀 Reviens demain !", true);
+  document.getElementById('msg-input').disabled = true;
+  document.getElementById('send-btn').disabled = true;
+  return;
+}
+messageCount++;
   if (!text || !alter) return;
 
   const sender = getSenderName();

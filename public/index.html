@@ -63,6 +63,7 @@ footer span{color:var(--accent)}
   <div style="display:flex;gap:.75rem;align-items:center">
     <a href="/create" class="btn-outline">Créer mon Alter</a>
     <a href="/create" class="btn">Commencer →</a>
+    <a href="/about" class="btn-outline">Comment ça marche</a>
   </div>
 </nav>
 
@@ -92,8 +93,13 @@ footer span{color:var(--accent)}
   </div>
 </div>
 
-<footer><p>made with 0 budget · <span>alter.</span> beta 2025</p></footer>
-
+<footer>
+  <p>
+    <a href="/about" style="color:var(--muted);text-decoration:none;margin:0 .5rem">Comment ça marche</a>
+    <a href="/privacy" style="color:var(--muted);text-decoration:none;margin:0 .5rem">Confidentialité</a>
+    · <span>alter.</span> beta 2026
+  </p>
+</footer>
 <script>
 async function loadAlters() {
   try {

@@ -215,5 +215,28 @@ if (require.main === module) {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => console.log(`🚀 Alter App running on http://localhost:${PORT}`));
 }
-
+// ─── CRON JOB — RECAP EMAIL CHAQUE MATIN 8H ──────────────────────────────────
+const RECAP_HOUR = 8;
+setInterval(async () => {
+  const now = new Date();
+  if (now.getHours() === RECAP_HOUR && now.getMinutes() === 0) {
+    const db = readDB();
+    for (const alterId in db.alters) {
+      const alter = db.alters[alterId];
+      if (!alter.email) continue;
+      const today = new Date().toDateString();
+      const todayLogs = (db.conversations[alterId] || []).filter(l =>
+        new Date(l.timestamp).toDateString() === today
+      );
+      if (todayLogs.length > 0) {
+        try {
+          await sendRecapEmail(alter.email, alter.name, todayLogs);
+          console.log('📧 Recap envoyé à', alter.email);
+        } catch(e) {
+          console.error('Email error:', e.message);
+        }
+      }
+    }
+  }
+}, 60000);
 module.exports = app;

@@ -26,12 +26,12 @@ function writeDB(data) {
 
 // ─── OPENROUTER CALL ─────────────────────────────────────────────────────────
 async function callOpenRouter(systemPrompt, messages) {
-  const models = [
-    'arcee-ai/arcee-trinity-large-preview:free',
-    'stepfun/step-3.5-flash:free',
-    'nvidia/nvidia-nemotron-3-super-120b:free',
-    'mistralai/mistral-7b-instruct:free',
-  ];
+ const models = [
+  'mistralai/mistral-7b-instruct:free',
+  'google/gemma-3-4b-it:free',
+  'nvidia/nvidia-nemotron-3-super-120b:free',
+  'arcee-ai/arcee-trinity-large-preview:free',
+];
 
   for (const model of models) {
     try {

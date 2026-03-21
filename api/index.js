@@ -26,49 +26,28 @@ function writeDB(data) {
 
 // ─── OPENROUTER CALL ─────────────────────────────────────────────────────────
 async function callOpenRouter(systemPrompt, messages) {
-const models = [
-  'google/gemma-3-12b-it:free',
-  'google/gemma-3-27b-it:free',
-  'google/gemma-3-4b-it:free',
-];
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'llama-3.1-8b-instant',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        ...messages
+      ],
+      max_tokens: 300,
+      temperature: 0.9,
+    })
+  });
 
-  for (const model of models) {
-    try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': process.env.APP_URL || 'http://localhost:3000',
-          'X-Title': 'Alter App'
-        },
-        body: JSON.stringify({
-          model: model,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            ...messages
-          ],
-          max_tokens: 300,
-          temperature: 0.9,
-          stop: ["Pensée:", "Je dois penser", "Premièrement"]
-        })
-      });
-
-      const data = await response.json();
-      if (data.choices && data.choices[0]) {
-  console.log('✅ Modèle utilisé:', model);
-  const msg = data.choices[0].message;
-  let content = msg.content || '';
-  content = content.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
-  content = content.replace(/\*[^*]*\*/g, '').trim();
-  if (content.trim()) return content.trim();
-}
-    } catch (err) {
-      console.log('❌ Modèle failed:', model, err.message);
-    }
+  const data = await response.json();
+  if (data.choices && data.choices[0]) {
+    return data.choices[0].message.content.trim();
   }
-
-  throw new Error('Tous les modèles ont échoué, réessaie dans 30 secondes');
+  throw new Error('Groq error: ' + JSON.stringify(data));
 }
 // ─── Build the system prompt from the Alter's personality ────────────────────
 function buildSystemPrompt(alter) {

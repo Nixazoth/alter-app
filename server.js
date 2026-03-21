@@ -199,6 +199,12 @@ app.get('/api/alters', (req, res) => {
 });
 
 // ─── Serve frontend pages ─────────────────────────────────────────────────────
+app.get('/privacy', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'privacy.html'));
+});
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'about.html'));
+});
 app.get('/chat/:id', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'chat.html'));
 });

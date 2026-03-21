@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comment ça marche — Alter</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--black:#0a0a0a;--white:#f5f2ee;--accent:#c8f55a;--card:#141414;--muted:#6b6b6b;--border:#1e1e1e}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:4rem}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2rem;border-bottom:1px solid var(--border)}
+.logo{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;text-decoration:none;color:var(--white)}
+.logo span{color:var(--accent)}
+.btn{background:var(--accent);color:var(--black);border:none;padding:.6rem 1.4rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;text-decoration:none}
+
+.hero{text-align:center;padding:4rem 2rem 3rem;max-width:700px;margin:0 auto}
+h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,6vw,4rem);font-weight:800;letter-spacing:-.04em;margin-bottom:1rem;line-height:1}
+h1 span{color:var(--accent)}
+.sub{color:var(--muted);font-size:1rem;line-height:1.6;max-width:480px;margin:0 auto 2rem}
+
+.container{max-width:800px;margin:0 auto;padding:0 1.5rem}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:1rem;margin-bottom:4rem}
+.step{display:flex;gap:1.5rem;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.75rem}
+.step-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent);line-height:1;flex-shrink:0;width:40px}
+.step-content h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.4rem}
+.step-content p{color:var(--muted);font-size:.875rem;line-height:1.6}
+.step-content strong{color:var(--white)}
+
+/* FAQ */
+.faq-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:1.5rem;letter-spacing:-.02em}
+.faq{display:flex;flex-direction:column;gap:.75rem;margin-bottom:4rem}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.faq-q{padding:1.1rem 1.25rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:500;font-size:.9rem}
+.faq-q:hover{background:#1a1a1a}
+.faq-arrow{color:var(--accent);font-size:1.2rem;transition:transform .2s;flex-shrink:0}
+.faq-a{padding:0 1.25rem;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;color:var(--muted);font-size:.875rem;line-height:1.6}
+.faq-item.open .faq-a{max-height:200px;padding:0 1.25rem 1.1rem}
+.faq-item.open .faq-arrow{transform:rotate(45deg)}
+
+/* CTA */
+.cta{text-align:center;padding:3rem 2rem;background:var(--card);border:1px solid var(--border);border-radius:24px;margin-bottom:2rem}
+.cta h2{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;margin-bottom:.75rem}
+.cta h2 span{color:var(--accent)}
+.cta p{color:var(--muted);margin-bottom:1.75rem;font-size:.9rem}
+
+footer{text-align:center;padding:2rem;border-top:1px solid var(--border);font-size:.8rem;color:var(--muted)}
+footer span{color:var(--accent)}
+footer a{color:var(--muted);text-decoration:none;margin:0 .5rem}
+footer a:hover{color:var(--white)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">alter<span>.</span></a>
+  <a href="/create" class="btn">Créer mon Alter →</a>
+</nav>
+
+<div class="hero">
+  <h1>Comment ça<br><span>marche ?</span></h1>
+  <p class="sub">Alter c'est ton clone IA. Tu le configures une fois, et il répond à ta place quand t'es pas dispo.</p>
+</div>
+
+<div class="container">
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h3>Tu crées ton Alter</h3>
+        <p>Tu réponds à quelques questions sur ta personnalité — ton humour, tes expressions, tes centres d'intérêt. Plus t'es précis, plus ton Alter te ressemble. Ça prend <strong>2 minutes chrono</strong>.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h3>Tu reçois ton lien personnel</h3>
+        <p>T'as un lien unique genre <strong>alter-app.onrender.com/chat/tonnom</strong>. Tu le balles à tes amis sur WhatsApp, Instagram, Discord — où tu veux.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h3>Tes amis causent à ton Alter</h3>
+        <p>Ils ouvrent le lien sur leur tel, <strong>sans inscription</strong>, et ils chattent directement avec ton clone IA. Il répond comme toi — même humour, même style, mêmes expressions.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <h3>Tu lis tout dans ton dashboard</h3>
+        <p>Chaque matin tu vas sur ton dashboard avec ton mot de passe et tu vois <strong>toutes les conversations</strong> que ton Alter a eues. Rien n'est caché.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq-title">Questions fréquentes</div>
+  <div class="faq">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        C'est quoi la différence avec ChatGPT ou Character.ai ?
+        <span class="faq-arrow">+</span>
+      </div>
+      <div class="faq-a">Character.ai c'est des personnages fictifs. Alter c'est TOI — une vraie personne que tes amis connaissent. Le lien émotionnel est réel parce que la personne est réelle.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Mes amis savent qu'ils parlent à une IA ?
+        <span class="faq-arrow">+</span>
+      </div>
+      <div class="faq-a">Oui, c'est clairement indiqué "Alter IA" dans l'interface. La transparence c'est important — le but c'est pas de tromper mais de créer une expérience sociale fun.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Est-ce que mes conversations sont privées ?
+        <span class="faq-arrow">+</span>
+      </div>
+      <div class="faq-a">Les conversations sont visibles uniquement par toi via ton dashboard protégé par mot de passe. Elles ne sont pas partagées avec des tiers.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Je peux supprimer mon Alter ?
+        <span class="faq-arrow">+</span>
+      </div>
+      <div class="faq-a">Pour l'instant contacte-nous via la page d'accueil. La suppression automatique arrive bientôt.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        C'est gratuit ?
+        <span class="faq-arrow">+</span>
+      </div>
+      <div class="faq-a">Oui, totalement gratuit pendant la beta. On te préviendra avant de passer à un modèle payant.</div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <h2>Prêt à créer<br>ton <span>Alter ?</span></h2>
+    <p>2 minutes et ton clone IA est en ligne pour tes amis.</p>
+    <a href="/create" class="btn" style="font-size:1rem;padding:.875rem 2rem">Créer mon Alter gratuitement →</a>
+  </div>
+</div>
+
+<footer>
+  <p>
+    <a href="/">Accueil</a>
+    <a href="/privacy">Confidentialité</a>
+    <a href="/about">Comment ça marche</a>
+    · <span>alter.</span> beta 2025
+  </p>
+</footer>
+
+<script>
+function toggleFaq(el) {
+  const item = el.parentElement;
+  item.classList.toggle('open');
+}
+</script>
+</body>
+</html>

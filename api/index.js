@@ -8,7 +8,7 @@ const fs = require('fs');
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // ─── Simple file-based "database" (no external DB needed) ───────────────────
 const DB_FILE = path.join(__dirname, 'db.json');
@@ -202,16 +202,24 @@ app.get('/api/alters', (req, res) => {
 });
 
 // ─── Serve frontend pages ─────────────────────────────────────────────────────
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'about.html'));
+});
+
+app.get('/privacy', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'privacy.html'));
+});
+
 app.get('/chat/:id', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'chat.html'));
+  res.sendFile(path.join(__dirname, '..', 'public', 'chat.html'));
 });
 
 app.get('/dashboard/:id', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+  res.sendFile(path.join(__dirname, '..', 'public', 'dashboard.html'));
 });
 
 app.get('/create', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'create.html'));
+  res.sendFile(path.join(__dirname, '..', 'public', 'create.html'));
 });
 
 if (require.main === module) {

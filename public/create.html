@@ -132,6 +132,12 @@ textarea{min-height:100px}
       <label>Mot de passe pour ton dashboard <span class="label-hint">Pour lire les logs de ce que ton Alter a dit — garde-le précieusement</span></label>
       <input type="password" id="password" placeholder="Crée un mot de passe...">
     </div>
+    
+    <!-- Q8 -->
+<div class="question-block" data-step="8">
+   <label>Ton email pour le recap <span class="label-hint">Chaque matin tu reçois un résumé de ce que ton Alter a dit — optionnel</span></label>
+    <input type="email" id="email" placeholder="ton@email.com">
+</div>
 
   </form>
 
@@ -158,7 +164,7 @@ textarea{min-height:100px}
 
 <script>
 let currentStep = 1;
-const totalSteps = 7;
+const totalSteps = 8;
 let selectedHumor = '';
 let selectedVibes = '';
 let alterId = '';
@@ -220,14 +226,15 @@ async function submitForm() {
   btn.textContent = 'Création en cours...';
   btn.disabled = true;
 
-  const payload = {
+const payload = {
     name: document.getElementById('name').value.trim(),
     style: document.getElementById('style').value.trim(),
     humor: selectedHumor,
     interests: document.getElementById('interests').value.trim() || 'Divers',
     vibes: selectedVibes,
     expressions: document.getElementById('expressions').value.trim() || 'Naturel',
-    password: document.getElementById('password').value.trim()
+    password: document.getElementById('password').value.trim(),
+    email: document.getElementById('email').value.trim() || null
   };
 
   try {

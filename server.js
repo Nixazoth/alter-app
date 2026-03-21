@@ -90,12 +90,45 @@ RÈGLES ABSOLUES :
 
 Tu représentes ${alter.name}. Fais-le/la bien.`;
 }
+// ─── SEND MORNING RECAP EMAIL ─────────────────────────────────────────────────
+async function sendRecapEmail(alterEmail, alterName, logs) {
+  if (!logs.length) return;
 
+  const today = new Date().toLocaleDateString('fr-FR', {day:'2-digit', month:'long', year:'numeric'});
+  const convosHtml = logs.map(log => `
+    <div style="background:#1a1a1a;border-radius:12px;padding:1rem;margin-bottom:1rem">
+      <p style="color:#6b6b6b;font-size:12px;margin-bottom:.5rem">${log.sender} · ${new Date(log.timestamp).toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}</p>
+      <p style="color:#d0d0d0;margin-bottom:.5rem">💬 ${log.message}</p>
+      <p style="color:#c8f55a">🤖 ${log.reply}</p>
+    </div>
+  `).join('');
+
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: 'Alter <onboarding@resend.dev>',
+      to: alterEmail,
+      subject: `🤖 Ton Alter a eu ${logs.length} conversation${logs.length > 1 ? 's' : ''} — ${today}`,
+      html: `
+        <div style="background:#0a0a0a;color:#f5f2ee;font-family:sans-serif;padding:2rem;max-width:600px;margin:0 auto;border-radius:16px">
+          <h1 style="font-size:1.5rem;margin-bottom:.5rem">Bonjour <span style="color:#c8f55a">${alterName}</span> 👋</h1>
+          <p style="color:#6b6b6b;margin-bottom:2rem">Voilà ce que ton Alter a dit hier :</p>
+          ${convosHtml}
+          <p style="color:#6b6b6b;font-size:12px;margin-top:2rem;text-align:center">alter. beta 2025</p>
+        </div>
+      `
+    })
+  });
+}
 // ─── ROUTES ──────────────────────────────────────────────────────────────────
 
 // Créer un Alter
 app.post('/api/create-alter', (req, res) => {
-  const { name, style, humor, interests, vibes, expressions, never, password } = req.body;
+  const { name, style, humor, interests, vibes, expressions, never, password, email } = req.body;
 
   if (!name || !style || !password) {
     return res.status(400).json({ error: 'Champs manquants' });
@@ -104,7 +137,7 @@ app.post('/api/create-alter', (req, res) => {
   const id = name.toLowerCase().replace(/[^a-z0-9]/g, '') + '-' + uuidv4().slice(0, 6);
   const db = readDB();
 
-  db.alters[id] = {
+db.alters[id] = {
     id,
     name,
     style,
@@ -114,7 +147,8 @@ app.post('/api/create-alter', (req, res) => {
     expressions: expressions || 'Naturel',
     never: never || 'Rien de particulier',
     password,
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    email: email || null,
   };
 
   db.conversations[id] = [];

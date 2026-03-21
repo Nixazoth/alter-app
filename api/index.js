@@ -28,8 +28,8 @@ function writeDB(data) {
 async function callOpenRouter(systemPrompt, messages) {
 const models = [
   'google/gemma-3-4b-it:free',
-  'mistralai/mistral-7b-instruct:free',
-  'nvidia/nvidia-nemotron-3-super-120b:free',
+  'google/gemma-3-12b-it:free',
+  'google/gemma-3-27b-it:free',
 ];
 
   for (const model of models) {

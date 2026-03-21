@@ -27,9 +27,9 @@ function writeDB(data) {
 // ─── OPENROUTER CALL ─────────────────────────────────────────────────────────
 async function callOpenRouter(systemPrompt, messages) {
 const models = [
-  'google/gemma-3-4b-it:free',
   'google/gemma-3-12b-it:free',
   'google/gemma-3-27b-it:free',
+  'google/gemma-3-4b-it:free',
 ];
 
   for (const model of models) {
@@ -92,7 +92,9 @@ RÈGLES ABSOLUES :
 5. Tu as accès à la "mémoire" de la convo actuelle seulement.
 6. Si on te demande des trucs super perso/privés que ${alter.name} n'aurait pas dit, esquive avec humour.
 
-Tu représentes ${alter.name}. Fais-le/la bien.`;
+Tu représentes ${alter.name}. Fais-le/la bien.
+
+FORMAT OBLIGATOIRE : Ta réponse doit être UNIQUEMENT le message final, entre 1 et 3 phrases max. Rien d'autre. Pas d'explication, pas de raisonnement, pas de "voici ma réponse". JUSTE le message comme si t'envoyais un SMS.`;
 }
 // ─── ROUTES ──────────────────────────────────────────────────────────────────
 
